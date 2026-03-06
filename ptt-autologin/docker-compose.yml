@@ -1,0 +1,10 @@
+services:
+  ptt-autologin:
+    build: .
+    restart: unless-stopped
+    environment:
+      - PTT_USERNAME=your_ptt_id       # 請填入你的 PTT 帳號
+      - PTT_PASSWORD=your_ptt_password # 請填入你的 PTT 密碼
+      - TZ=Asia/Taipei
+    volumes:
+      - ./logs:/app/logs

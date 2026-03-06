@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyVideoDL</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 300px;
+      font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
+      font-size: 14px;
+      color: #1f1f1f;
+      background: #ffffff;
+    }
+
+    .header {
+      background: #ff0000;
+      color: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header h1 { font-size: 16px; font-weight: 600; }
+    .header .logo { font-size: 20px; }
+
+    .section {
+      padding: 14px 16px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .section:last-child { border-bottom: none; }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    /* 伺服器狀態列 */
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .status-indicator { display: flex; align-items: center; gap: 8px; }
+
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #ccc;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .status-dot.online  { background: #2ba640; }
+    .status-dot.offline { background: #cc0000; }
+    .status-dot.checking {
+      background: #f0ad00;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .status-text { font-size: 13px; color: #444; }
+
+    .download-dir {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    /* 伺服器 URL 輸入 */
+    .url-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .url-input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: "Consolas", monospace;
+      color: #333;
+      outline: none;
+    }
+
+    .url-input:focus { border-color: #aaa; }
+
+    /* 按鈕 */
+    button {
+      padding: 6px 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      background: #f5f5f5;
+      color: #333;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #e8e8e8; }
+    button:disabled { opacity: 0.5; cursor: default; }
+
+    .btn-save {
+      background: #065fd4;
+      color: #fff;
+      border-color: #065fd4;
+    }
+
+    .btn-save:hover { background: #0550b8; }
+
+    /* 格式選擇 */
+    .format-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .format-btn {
+      padding: 8px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      background: #f9f9f9;
+      color: #333;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .format-btn:hover { border-color: #aaa; background: #f0f0f0; }
+    .format-btn.selected { border-color: #ff0000; background: #fff5f5; color: #cc0000; }
+
+    /* 下載清單 */
+    .task-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .task-item {
+      background: #f8f8f8;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    .task-title {
+      font-weight: 500;
+      color: #1f1f1f;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+
+    .task-status { display: flex; align-items: center; gap: 6px; color: #555; }
+
+    .task-progress-bar {
+      height: 3px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+
+    .task-progress-fill {
+      height: 100%;
+      background: #065fd4;
+      border-radius: 2px;
+      transition: width 0.4s;
+    }
+
+    .task-item.done .task-progress-fill { background: #2ba640; }
+    .task-item.error .task-progress-fill { background: #cc0000; }
+
+    .task-clear {
+      float: right;
+      font-size: 11px;
+      color: #aaa;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .task-clear:hover { color: #cc0000; background: none; border: none; }
+
+    .empty-tip { font-size: 12px; color: #aaa; text-align: center; padding: 4px 0; }
+
+    /* 提示 */
+    .tip {
+      background: #f8f8f8;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .tip code {
+      display: block;
+      background: #ebebeb;
+      border-radius: 3px;
+      padding: 4px 8px;
+      margin-top: 6px;
+      font-family: "Consolas", monospace;
+      font-size: 11px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo">⬇</span>
+    <h1>EasyVideoDL</h1>
+  </div>
+
+  <!-- 伺服器狀態 -->
+  <div class="section">
+    <div class="section-title">伺服器狀態</div>
+    <div class="status-row">
+      <div class="status-indicator">
+        <div class="status-dot checking" id="statusDot"></div>
+        <span class="status-text" id="statusText">檢查中...</span>
+      </div>
+      <button id="recheckBtn">重新測試</button>
+    </div>
+    <div class="download-dir" id="downloadDir"></div>
+  </div>
+
+  <!-- 伺服器位址設定 -->
+  <div class="section">
+    <div class="section-title">伺服器位址</div>
+    <div class="url-row">
+      <input
+        type="text"
+        class="url-input"
+        id="serverUrlInput"
+        placeholder="http://192.168.1.100:6789"
+      />
+      <button class="btn-save" id="saveUrlBtn">儲存</button>
+    </div>
+  </div>
+
+  <!-- 下載格式 -->
+  <div class="section">
+    <div class="section-title">下載格式</div>
+    <div class="format-grid">
+      <button class="format-btn" data-format="mp4">影片 · 最高畫質</button>
+      <button class="format-btn" data-format="mp4-720p">影片 · 720p</button>
+      <button class="format-btn" data-format="bestvideo+bestaudio">影片 · 4K原始</button>
+      <button class="format-btn" data-format="mp3">音樂 · MP3</button>
+    </div>
+  </div>
+
+  <!-- 下載清單 -->
+  <div class="section">
+    <div class="section-title">下載紀錄</div>
+    <div class="task-list" id="taskList">
+      <div class="empty-tip">尚無下載紀錄</div>
+    </div>
+  </div>
+
+  <!-- 使用說明 -->
+  <div class="section">
+    <div class="section-title">NAS Docker 部署</div>
+    <div class="tip">
+      在 NAS 上執行：
+      <code>docker compose up -d</code>
+      然後將上方位址改為 NAS 的 IP
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

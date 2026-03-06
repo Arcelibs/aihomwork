@@ -1,0 +1,13 @@
+services:
+  easyvideodl:
+    build: .
+    container_name: easyvideodl
+    restart: unless-stopped
+    ports:
+      - "6789:6789"
+    volumes:
+      # 將 NAS 下載資料夾掛載至容器的 /downloads
+      # 修改左側路徑為你的 NAS 實際路徑
+      - /volume1/download/EasyVideoDL:/downloads
+    environment:
+      - DOWNLOAD_DIR=/downloads

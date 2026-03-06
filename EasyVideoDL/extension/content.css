@@ -1,0 +1,74 @@
+#easyvideodl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 16px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 18px;
+  background: var(--yt-spec-badge-chip-background, #f2f2f2);
+  color: var(--yt-spec-text-primary, #0f0f0f);
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 36px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  user-select: none;
+  vertical-align: middle;
+}
+
+#easyvideodl-btn:hover:not(:disabled) {
+  background: var(--yt-spec-badge-chip-background-hover, #e5e5e5);
+}
+
+#easyvideodl-btn:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+/* 狀態：完成 - 綠色 */
+#easyvideodl-btn[data-state="done"] {
+  background: #2ba640;
+  color: #ffffff;
+}
+
+/* 狀態：錯誤 / 伺服器離線 - 紅色 */
+#easyvideodl-btn[data-state="error"],
+#easyvideodl-btn[data-state="server-offline"] {
+  background: #cc0000;
+  color: #ffffff;
+}
+
+/* 狀態：下載中 - 脈衝動畫 */
+#easyvideodl-btn[data-state="downloading"] {
+  background: var(--yt-spec-call-to-action, #065fd4);
+  color: #ffffff;
+  animation: easyvideodl-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes easyvideodl-pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* 狀態：確認中 */
+#easyvideodl-btn[data-state="checking"] {
+  background: var(--yt-spec-badge-chip-background, #f2f2f2);
+  color: var(--yt-spec-text-secondary, #606060);
+}
+
+/* 深色主題相容 */
+html[dark] #easyvideodl-btn,
+ytd-app[is-dark-theme] #easyvideodl-btn {
+  background: var(--yt-spec-badge-chip-background, #3f3f3f);
+  color: var(--yt-spec-text-primary, #f1f1f1);
+}
+
+html[dark] #easyvideodl-btn:hover:not(:disabled),
+ytd-app[is-dark-theme] #easyvideodl-btn:hover:not(:disabled) {
+  background: var(--yt-spec-badge-chip-background-hover, #555555);
+}

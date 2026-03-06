@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "EasyVideoDL",
+  "version": "1.1.0",
+  "description": "一鍵下載 YouTube 影片，透過本地或 NAS 上的 yt-dlp 伺服器處理",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://www.youtube.com/*",
+    "http://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
