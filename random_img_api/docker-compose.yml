@@ -1,0 +1,25 @@
+services:
+  api:
+    build: .
+    container_name: rancom-img-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"    # 若純走 CF Tunnel 可刪掉
+    volumes:
+      - ./data:/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - IMAGES_DIR=/data/images
+      - DB_PATH=/data/db.sqlite
+      - DEFAULT_RESPONSE_FORMAT=stream
+      - BASE_URL=https://your-domain.com    # 改成你的域名
+      - ADMIN_KEY=${ADMIN_KEY}              # 從 .env 讀入
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: rancom-cf-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}    # 從 .env 讀入
+    depends_on:
+      - api

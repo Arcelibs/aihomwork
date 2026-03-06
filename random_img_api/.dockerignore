@@ -1,0 +1,11 @@
+node_modules
+dist
+data
+.env
+*.log
+logs
+.git
+.gitignore
+README.md
+ecosystem.config.js
+docker

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/jimmy/Documents/dev_task/rancom_img_api/**)",
+      "Bash(npm install)",
+      "Bash(npm run:*)",
+      "Bash(echo:*)",
+      "Bash(netstat:*)",
+      "Bash(cmd:*)",
+      "Bash(powershell:*)",
+      "Bash(__NEW_LINE_fc4b8fa3b6d7b07c__ echo:*)",
+      "Bash(__NEW_LINE_2cfbf63f329f764b__ echo:*)",
+      "Bash(xargs -I{} powershell -Command \"Stop-Process -Id {} -Force\")",
+      "Bash(rm:*)",
+      "Bash(du:*)"
+    ]
+  }
+}
