@@ -1,0 +1,2 @@
+# aihomwork
+專門拿來放用ClaudeCode等CLI工具產出的小程式合集
